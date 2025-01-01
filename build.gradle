@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+}
+
+group = 'isaacwallace123'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        name = "mongodb-repo"
+        url = "https://oss.sonatype.org/content/repositories/releases/"
+    }
+    maven {
+        name = "mysql-repo"
+        url = "https://repo1.maven.org/maven2/"
+    }
+    maven {
+        name = "mariadb-repo"
+        url = "https://repo1.maven.org/maven2/"
+    }
+    maven {
+        name = "sqlite-repo"
+        url = "https://repo1.maven.org/maven2/"
+    }
+}
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+
+    // Database dependencies \\
+
+    implementation 'org.mongodb:mongodb-driver-sync:4.10.2'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.1'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class' : 'isaacwallace123.ecoverse.Ecoverse'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('paper-plugin.yml') {
+        expand props
+    }
+}

@@ -1,0 +1,4 @@
+name: Ecoverse
+version: '1.0'
+main: isaacwallace123.ecoverse.Ecoverse
+api-version: '1.21'

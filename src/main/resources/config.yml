@@ -1,0 +1,25 @@
+# This is where all of your database configs are
+database:
+  # This is the type of data querying language you want.
+  # The choices are "MySQL", "MariaDB", and "MongoDB"
+  type: "MySQL"
+
+  # Host is the ip of your hosted DB and port is the hosted port
+  host: "localhost"
+  port: 3306
+
+  # Username and Password refer to the auth username and auth password for the database
+  username: "username"
+  password: "password"
+
+  # This is the name of the collection created within your database
+  collection: "Ecoverse"
+
+  # If you would like to use a specific URI, you can set it here.
+  # Otherwise, it will use the above information to connect.
+  uri: "mongodb://username:password@localhost:27017/Ecoverse"
+
+# This is where you default configs are
+default:
+  balance: 100.0
+  ticker: "$"
