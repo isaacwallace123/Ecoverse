@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 
 import isaacwallace123.ecoverse.Ecoverse;
 
@@ -74,7 +73,7 @@ public class Maria implements Database {
             connection = DriverManager.getConnection(
                     "jdbc:mariadb://" + host + ":" + port + "/" + this.collection, username, password
             );
-            plugin.getLogger().info("Connected to the MariaDB database successfully with the database.");
+            plugin.getLogger().info("Connected to the MariaDB database successfully.");
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to reconnect to the MariaDB database: " + e.getMessage());
         }

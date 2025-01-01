@@ -1,5 +1,6 @@
 package isaacwallace123.ecoverse;
 
+import isaacwallace123.ecoverse.commands.Heal;
 import isaacwallace123.ecoverse.database.Database;
 import isaacwallace123.ecoverse.database.Maria;
 import isaacwallace123.ecoverse.database.Mongo;
@@ -24,6 +25,8 @@ public final class Ecoverse extends JavaPlugin {
         }
 
         database.connect();
+
+        new Heal();
     }
 
     @Override

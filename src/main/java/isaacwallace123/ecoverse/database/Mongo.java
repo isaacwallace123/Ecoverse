@@ -40,6 +40,8 @@ public class Mongo implements Database {
                 plugin.getLogger().info("Attempting to connect to MongoDB using URI.");
 
                 client = MongoClients.create(uri);
+
+                plugin.getLogger().info("Connected to MongoDB successfully.");
             }
         } catch (MongoException e) {
             plugin.getLogger().severe("Failed to connect to MongoDB using URI: " + e.getMessage());
