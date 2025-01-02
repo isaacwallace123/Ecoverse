@@ -1,7 +1,8 @@
 package isaacwallace123.ecoverse;
 
+import isaacwallace123.ecoverse.Expansions.EcoverseExpansion;
 import isaacwallace123.ecoverse.Utils.Scoreboard;
-import isaacwallace123.ecoverse.Commands.Heal;
+import isaacwallace123.ecoverse.Command.Heal;
 import isaacwallace123.ecoverse.Databases.Database;
 import isaacwallace123.ecoverse.Databases.Maria;
 import isaacwallace123.ecoverse.Databases.Mongo;
@@ -30,6 +31,8 @@ public final class Ecoverse extends JavaPlugin {
         }
 
         database.connect();
+
+        new EcoverseExpansion().register();
 
         new Heal();
 

@@ -1,4 +1,4 @@
-package isaacwallace123.ecoverse.Commands;
+package isaacwallace123.ecoverse.Command;
 
 import isaacwallace123.ecoverse.Utils.CommandBase;
 import isaacwallace123.ecoverse.Utils.Message;
