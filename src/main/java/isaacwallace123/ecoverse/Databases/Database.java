@@ -1,4 +1,4 @@
-package isaacwallace123.ecoverse.database;
+package isaacwallace123.ecoverse.Databases;
 
 public interface Database {
     void connect();

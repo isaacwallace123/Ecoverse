@@ -1,7 +1,5 @@
 package isaacwallace123.ecoverse.Utils;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
 
 public class Message {

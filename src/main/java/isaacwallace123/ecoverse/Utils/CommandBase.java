@@ -20,39 +20,49 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
     private final int minArguments;
     private final int maxArguments;
 
+    private final String description;
+    private final String permission;
+
     private final boolean playerOnly;
 
-    public CommandBase(String command) {
-        this(command, 0);
+    public CommandBase(String command, String description) {
+        this(command, 0, description);
     }
 
-    public CommandBase(String command, boolean playerOnly) {
-        this(command, 0, playerOnly);
+    public CommandBase(String command, boolean playerOnly, String description) {
+        this(command, 0, playerOnly, description);
     }
 
-    public CommandBase(String command, int requiredArguments) {
-        this(command, requiredArguments, requiredArguments);
+    public CommandBase(String command, int requiredArguments, String description) {
+        this(command, requiredArguments, requiredArguments, description);
     }
 
-    public CommandBase(String command, int minArguments, int maxArguments) {
-        this(command, minArguments, maxArguments, false);
+    public CommandBase(String command, int minArguments, int maxArguments, String description) {
+        this(command, minArguments, maxArguments, false, description);
     }
 
-    public CommandBase(String command, int requiredArguments, boolean playerOnly) {
-        this(command, requiredArguments, requiredArguments, playerOnly);
+    public CommandBase(String command, int requiredArguments, boolean playerOnly, String description) {
+        this(command, requiredArguments, requiredArguments, playerOnly, description);
     }
 
-    public CommandBase(String command, int minArguments, int maxArguments, boolean playerOnly) {
+    public CommandBase(String command, int minArguments, int maxArguments, boolean playerOnly, String description) {
         super(command);
 
         this.minArguments = minArguments;
         this.maxArguments = maxArguments;
         this.playerOnly = playerOnly;
+        this.description = description;
+
+        this.setDescription(this.description);
+        this.permission = this.generatePermissionString(command);
 
         CommandMap commandMap = getCommandMap();
 
         if (commandMap != null) {
-            commandMap.register(command, this);
+            this.setLabel("Ecoverse:" + command);
+            this.setAliases(List.of());
+
+            commandMap.register("Ecoverse", this);
         }
     }
 
@@ -86,6 +96,10 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
         Message.info(sender, this.getUsage());
     }
 
+    private String generatePermissionString(String command) {
+        return "ecoverse." + command.toLowerCase();
+    }
+
     public boolean execute(CommandSender sender, String alias, String[] arguments) {
         if (arguments.length < minArguments || (arguments.length > maxArguments && maxArguments != -1)) {
             sendUsage(sender);
@@ -97,25 +111,35 @@ public abstract class CommandBase extends BukkitCommand implements CommandExecut
             return true;
         }
 
-        String permission = this.getPermission();
-
         if (permission != null && !sender.hasPermission(permission)) {
             Message.error(sender, "You do not have permission to use this command.");
             return true;
         }
 
-        if (delayedPlayers != null && sender instanceof Player player) {
-            if (delayedPlayers.contains(player.getName())) {
-                Message.error(sender, "You cannot use this command for " + delay + " seconds.");
-                return true;
+        boolean commandExecuted = false;
+
+        if (sender instanceof Player player) {
+            String cooldownPermission = "ecoverse." + alias + ".cooldown";
+
+            if (player.isOp() || player.hasPermission("ecoverse.admin") || player.hasPermission(cooldownPermission)) {
+                commandExecuted = onCommand(sender, arguments);
+            } else if (delayedPlayers != null) {
+                if (delayedPlayers.contains(player.getName())) {
+                    Message.error(sender, "You cannot use this command for " + delay + " seconds.");
+                    return true;
+                }
+
+                delayedPlayers.add(player.getName());
+
+                Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("Ecoverse"), () -> delayedPlayers.remove(player.getName()), delay * 20L);
             }
-
-            delayedPlayers.add(player.getName());
-
-            Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("Ecoverse"), () -> delayedPlayers.remove(player.getName()), delay * 20L);
         }
 
-        if (!onCommand(sender, arguments)) {
+        if (!commandExecuted) {
+            commandExecuted = onCommand(sender, arguments);
+        }
+
+        if (!commandExecuted) {
             sendUsage(sender);
         }
 

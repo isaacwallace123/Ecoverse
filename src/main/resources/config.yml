@@ -12,14 +12,24 @@ database:
   username: "username"
   password: "password"
 
-  # This is the name of the collection created within your database
+  # This is the name of the database
   collection: "Ecoverse"
-
-  # If you would like to use a specific URI, you can set it here.
-  # Otherwise, it will use the above information to connect.
-  uri: "mongodb://username:password@localhost:27017/Ecoverse"
 
 # This is where you default configs are
 default:
   balance: 100.0
   ticker: "$"
+
+# This is your scoreboard
+scoreboard:
+  enabled: true
+  hidden-by-default: false
+
+  title: "<#FFFFFF>&l- Wall-Y.ca -</#FFFF00>"
+  lines:
+    - ""
+    - "&4&l ^z^t&r Kills: &4%statistic_player_kills%"
+    - "&6&l ^=^r^`&r Deaths: &6%statistic_deaths%"
+    - "&a&l$&r Money: &a%vault_eco_balance_formatted%"
+    - "&e&l ^o &r Playtime: &e%ptr_playtime_days%d %ptr_playtime_hours_trimmed%h"
+    - "&9&l ^=^q &r Rank: %luckperms_suffix%"

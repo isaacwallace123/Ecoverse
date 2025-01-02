@@ -1,21 +1,18 @@
-package isaacwallace123.ecoverse.commands;
+package isaacwallace123.ecoverse.Commands;
 
 import isaacwallace123.ecoverse.Utils.CommandBase;
 import isaacwallace123.ecoverse.Utils.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Heal {
-    public Heal() {
-        new CommandBase("heal", true) {
+public class Fly {
+    public Fly() {
+        new CommandBase("fly", true, "Allows the player to fly.") {
             @Override
             public boolean onCommand(CommandSender sender, String[] arguments) {
                 Player player = (Player) sender;
 
-                player.setHealth(20);
-                player.setFoodLevel(20);
-
-                Message.success(sender, "You have been healed.");
+                Message.success(player, "You have been healed.");
 
                 return true;
             }
