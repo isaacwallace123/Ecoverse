@@ -4,9 +4,8 @@ database:
   # The choices are "MySQL", "MariaDB", and "MongoDB"
   type: "MySQL"
 
-  # Host is the ip of your hosted DB and port is the hosted port
-  host: "localhost"
-  port: 3306
+  # The address of your hosted database. Example: "localhost:3306"
+  address: "localhost:27017"
 
   # Username and Password refer to the auth username and auth password for the database
   username: "username"
@@ -14,6 +13,15 @@ database:
 
   # This is the name of the database
   collection: "Ecoverse"
+
+  # This is the custom URI (Mostly here for mongodb users) ## OPTIONAL
+  # URI: ""
+
+  # What is the maximum pool-size (Pretty self explanitory)
+  max-pool-size: 10
+
+  # If you want SSL enabled or disabled
+  ssl: false
 
 # This is where you default configs are
 default:

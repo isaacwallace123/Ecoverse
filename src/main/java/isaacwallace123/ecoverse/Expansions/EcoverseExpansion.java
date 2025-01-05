@@ -1,10 +1,15 @@
 package isaacwallace123.ecoverse.Expansions;
 
+import isaacwallace123.ecoverse.DataAccess.User;
+import isaacwallace123.ecoverse.Ecoverse;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.Statistic;
 
 public class EcoverseExpansion extends PlaceholderExpansion {
+    private static Ecoverse plugin;
+
     @Override
     public String getIdentifier() {
         return "ecoverse";
@@ -22,7 +27,13 @@ public class EcoverseExpansion extends PlaceholderExpansion {
 
     @Override
     public boolean canRegister() {
-        return true;
+        try {
+            this.plugin = (Ecoverse) Bukkit.getPluginManager().getPlugin("Ecoverse");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return Bukkit.getPluginManager().getPlugin("Ecoverse") != null;
     }
 
     @Override
@@ -32,29 +43,27 @@ public class EcoverseExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, String params) {
-        if (player == null) {
-            return "";
-        }
+        if (player == null) return null;
+        if (plugin.userCache == null) return null;
 
-        if (params.equalsIgnoreCase("balance")) {
-            return "100";
-        }
+        User user = plugin.userCache.get(player.getUniqueId());
 
-        if (params.equalsIgnoreCase("balance_formatted")) {
-            Double number = 100.0;
+        if (user == null) return null;
 
-            return (number < 1000) ? String.valueOf(number) : (number < 1000000) ? String.format("%,d", number) : String.format("%.1f%s", number / Math.pow(1000, (int) (Math.log10(number) / 3)), new String[]{"", "K", "M", "B", "T", "Qa", "Qi", "Sx"}[(int) (Math.log10(number) / 3)]);
-        }
+        Double balance = user.getBalance();
+
+        if (params.equalsIgnoreCase("balance")) return Double.toString(balance);
+
+        if (params.equalsIgnoreCase("balance_formatted"))
+            return (balance < 1000) ? String.format("%.2f", balance)
+                    : (balance < 1000000) ? String.format("%,.2f", balance)
+                    : String.format("%.1f%s", balance / Math.pow(1000, (int) (Math.log10(balance) / 3)), new String[]{"", "K", "M", "B", "T", "Qa", "Qi", "Sx"}[(int) (Math.log10(balance) / 3)]);
 
         long playtime = player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20;
 
-        if (params.equalsIgnoreCase("playtime_formatted")) {
-            return formatPlaytime(playtime, "formatted");
-        }
+        if (params.equalsIgnoreCase("playtime_formatted")) return formatPlaytime(playtime, "formatted");
 
-        if (params.equalsIgnoreCase("playtime_formatted_characters")) {
-            return formatPlaytime(playtime, "formatted_characters");
-        }
+        if (params.equalsIgnoreCase("playtime_formatted_characters")) return formatPlaytime(playtime, "formatted_characters");
 
         return null;
     }
