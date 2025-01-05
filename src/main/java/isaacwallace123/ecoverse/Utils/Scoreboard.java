@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,14 @@ public class Scoreboard implements Listener {
     private final FileConfiguration config;
     private final boolean hasPlaceholders = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 
+    private final String[] lines;
+
     public Scoreboard(Ecoverse plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
 
         config = plugin.getConfig();
+
+        lines = config.getStringList("scoreboard.lines").toArray(new String[0]);
 
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (FastBoard board : boards.values()) {
@@ -32,12 +37,12 @@ public class Scoreboard implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         FastBoard board = new FastBoard(player);
 
         String title = config.getString("scoreboard.title", "&c&lEcoverse");;
-        board.updateTitle(ChatColor.translateAlternateColorCodes('&', title));
+        board.updateTitle(formatLine(title, player));
 
         boards.put(player.getUniqueId(), board);
     }
@@ -53,18 +58,41 @@ public class Scoreboard implements Listener {
     }
 
     private void updateBoard(FastBoard board) {
-        String[] lines = config.getStringList("scoreboard.lines").toArray(new String[0]);
-
         Player player = board.getPlayer();
 
-        for (int i = 0; i < lines.length; i++) {
-            if (hasPlaceholders) {
-                lines[i] = PlaceholderAPI.setPlaceholders(player, lines[i]);
-            }
+        String[] linesCopy = lines.clone();
 
-            lines[i] = ChatColor.translateAlternateColorCodes('&', lines[i]);
+        for (int i = 0; i < linesCopy.length; i++) {
+            linesCopy[i] = formatLine(linesCopy[i], player);
         }
 
-        board.updateLines(lines);
+        board.updateLines(linesCopy);
+    }
+
+    public static String convertHexToMinecraftColor(String hexColor) {
+        if (!hexColor.startsWith("#") || hexColor.length() != 7) {
+            return hexColor;
+        }
+
+        StringBuilder minecraftColor = new StringBuilder("§x");
+
+        for (int i = 1; i < hexColor.length(); i++) {
+            minecraftColor.append("§").append(hexColor.charAt(i));
+        }
+        return minecraftColor.toString();
+    }
+
+    private String formatLine(String line, Player player) {
+        if (hasPlaceholders) line = PlaceholderAPI.setPlaceholders(player, line);
+
+        line = ChatColor.translateAlternateColorCodes('&', line);
+
+        if (GradientUtils.isGradientString(line)) {
+            line = GradientUtils.applyGradientFromConfig(line);
+        } else {
+            line = convertHexToMinecraftColor(line);
+        }
+
+        return line;
     }
 }
