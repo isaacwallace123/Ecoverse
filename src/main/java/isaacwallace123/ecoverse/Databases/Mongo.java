@@ -20,7 +20,6 @@ public class Mongo implements Database {
     
     private final String host;
     private final int port;
-    private final String uri;
 
     private final String username;
     private final String password;
@@ -36,7 +35,6 @@ public class Mongo implements Database {
     
         this.host = plugin.getConfig().getString("database.host");
         this.port = plugin.getConfig().getInt("database.port");
-        this.uri = plugin.getConfig().getString("database.uri");
 
         this.username = plugin.getConfig().getString("database.username");
         this.password = plugin.getConfig().getString("database.password");

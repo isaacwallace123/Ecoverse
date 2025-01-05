@@ -35,7 +35,7 @@ public class Heal {
 
             @Override
             public String getUsage() {
-                return "/heal";
+                return "/heal <Player>";
             }
         }.enableDelay(2);
     }

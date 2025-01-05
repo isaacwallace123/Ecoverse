@@ -14,7 +14,6 @@ public class MySQL implements Database {
 
     private String host;
     private String port;
-    private String uri;
 
     private String username;
     private String password;
@@ -26,7 +25,6 @@ public class MySQL implements Database {
         
         this.host = plugin.getConfig().getString("database.host");
         this.port = plugin.getConfig().getString("database.port");
-        this.uri = plugin.getConfig().getString("database.uri");
 
         this.username = plugin.getConfig().getString("database.username");
         this.password = plugin.getConfig().getString("database.password");

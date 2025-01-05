@@ -13,7 +13,6 @@ public class Maria implements Database {
 
     private String host;
     private int port;
-    private String uri;
 
     private String username;
     private String password;
@@ -25,7 +24,6 @@ public class Maria implements Database {
 
         this.host = plugin.getConfig().getString("database.host");
         this.port = plugin.getConfig().getInt("database.port");
-        this.uri = plugin.getConfig().getString("database.uri");
 
         this.username = plugin.getConfig().getString("database.username");
         this.password = plugin.getConfig().getString("database.password");
